@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  Id            Int            @id @default(autoincrement())
+  CreatedAt     DateTime       @default(now())
+  UserName      String
+  Email         String         @unique
+  Password      String
+  Role          Role           @default(User)
+  BloodRequests BloodRequest[] @relation("UserBloodRequests")
+  BloodDonation BloodDonation[] @relation("UserBloodDonation")
+
+  @@map("User")
+}
+
+model BloodRequest {
+  Id        Int       @id @default(autoincrement())
+  CreatedAt DateTime  @default(now())
+  BloodType String
+  Date      DateTime  @default(now())
+  UserID    Int       
+  User      User      @relation(fields: [UserID], references: [Id], onDelete: Cascade, name: "UserBloodRequests")
+
+  @@map("BloodRequest")
+}
+
+model BloodDonation{
+  Id Int @id @default(autoincrement())
+  Date DateTime @default(now())
+  UserID   Int 
+  User User   @relation(fields: [UserID],references: [Id], onDelete: Cascade , name: "UserBloodDonation")
+  @@map("BloodDonation") 
+}
+
+
+enum Role{
+  User
+  Admin
+}
+
+enum BLoodType{
+  A_POSITIVE
+  A_NEGATIVE
+  AB_POSIITVE
+  AB_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
