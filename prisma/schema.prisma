@@ -13,6 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   Id            Int            @id @default(autoincrement())
   CreatedAt     DateTime       @default(now())
@@ -31,6 +32,9 @@ model BloodRequest {
   CreatedAt DateTime  @default(now())
   BloodType String
   Date      DateTime  @default(now())
+  RequiredBy String   
+  HospitalName String
+  BloodPint  String
   UserID    Int       
   User      User      @relation(fields: [UserID], references: [Id], onDelete: Cascade, name: "UserBloodRequests")
 
